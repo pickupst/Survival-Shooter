@@ -29,7 +29,7 @@ public class EnemyManager : MonoBehaviour
             timerBunny = 0;
         }
         if (spawnTimeBear <= timerBear)
-        {
+        { 
             Spawn(1);
             timerBear = 0;
         }

@@ -42,11 +42,6 @@ public class PlayerShooting : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-		if(Input.GetButton ("Fire1") && timer >= timeBetweenBullets && Time.timeScale != 0)
-        {
-            Shoot ();
-        }
-
         if(timer >= timeBetweenBullets * effectsDisplayTime)
         {
             DisableEffects ();
@@ -61,57 +56,59 @@ public class PlayerShooting : MonoBehaviour
     }
 
 
-    void Shoot ()
+    public void Shoot ()
     {
-        timer = 0f;
-        if (currentBullets <= 0)
+        if (timer >= timeBetweenBullets && Time.timeScale != 0)
         {
-            return;
-        }
-        currentBullets--;
-        ammoSlider.value = currentBullets;  
-
-        gunAudio.Play ();
-
-        gunLight.enabled = true;
-
-        gunParticles.Stop ();
-        gunParticles.Play ();
-
-        gunLine.enabled = true;
-        gunLine.SetPosition (0, transform.position);
-
-        shootRay.origin = transform.position;
-        shootRay.direction = transform.forward;
-
-        if(Physics.Raycast (shootRay, out shootHit, range, shootableMask))
-        {
-            EnemyHealth enemyHealth = shootHit.collider.GetComponent <EnemyHealth> ();
-            if(enemyHealth != null)
+            timer = 0f;
+            if (currentBullets <= 0)
             {
+                return;
+            }
+            currentBullets--;
+            ammoSlider.value = currentBullets;
 
-                enemyHealth.TakeDamage (damagePerShot, shootHit.point);
+            gunAudio.Play();
 
-                enemyImage.enabled = true;
-                enemyImage.sprite = enemyHealth.icon;
+            gunLight.enabled = true;
 
-                enemyHealthSlider.gameObject.SetActive(true);
-                enemyHealthSlider.maxValue = enemyHealth.startingHealth;
-                enemyHealthSlider.value = enemyHealth.currentHealth;
+            gunParticles.Stop();
+            gunParticles.Play();
+
+            gunLine.enabled = true;
+            gunLine.SetPosition(0, transform.position);
+
+            shootRay.origin = transform.position;
+            shootRay.direction = transform.forward;
+
+            if (Physics.Raycast(shootRay, out shootHit, range, shootableMask))
+            {
+                EnemyHealth enemyHealth = shootHit.collider.GetComponent<EnemyHealth>();
+                if (enemyHealth != null)
+                {
+
+                    enemyHealth.TakeDamage(damagePerShot, shootHit.point);
+
+                    enemyImage.enabled = true;
+                    enemyImage.sprite = enemyHealth.icon;
+
+                    enemyHealthSlider.gameObject.SetActive(true);
+                    enemyHealthSlider.maxValue = enemyHealth.startingHealth;
+                    enemyHealthSlider.value = enemyHealth.currentHealth;
+
+                }
+                else
+                {
+                    enemyImage.enabled = false;
+                    enemyHealthSlider.gameObject.SetActive(false);
+                }
+                gunLine.SetPosition(1, shootHit.point);
 
             }
             else
             {
-                enemyImage.enabled = false;
-                enemyHealthSlider.gameObject.SetActive(false);
+                gunLine.SetPosition(1, shootRay.origin + shootRay.direction * range);
             }
-            gunLine.SetPosition (1, shootHit.point);
-            
         }
-        else
-        {
-            gunLine.SetPosition (1, shootRay.origin + shootRay.direction * range);
-        }
-        
     }
 }

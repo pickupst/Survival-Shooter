@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public JoystickManager joystickManager;
 
     public float speed = 6f;
     Animator animator;
@@ -10,23 +11,21 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 movement;
     Rigidbody playerRigidbody;
-    int floorMask;
-    float camRayLength = 100f;
+
     float rotationLerpCount = 4f;
 
     private void Awake()
     {
         playerRigidbody = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
-        floorMask = LayerMask.GetMask("Floor");
     }
 
 
     private void FixedUpdate()
     {
 
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
+        float h = joystickManager.getJoystickVector().x;
+        float v = joystickManager.getJoystickVector().z;
         Move(h, v);
 
         Animating(h, v);
@@ -37,20 +36,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void Turning()
     {
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit floorHit;
-
-        if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
+        if (joystickManager.getJoystickVector() != Vector3.zero)
         {
-
-            Vector3 playerToMOuse = floorHit.point - transform.position;
-            playerToMOuse.y = 0;
-            Quaternion newRotation = Quaternion.LookRotation(playerToMOuse);
+            Quaternion newRotation = Quaternion.LookRotation(joystickManager.getJoystickVector());
 
             transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * rotationLerpCount);
-            //playerRigidbody.MoveRotation(newRotation);
-
+            playerRigidbody.MoveRotation(newRotation);
         }
+
     }
 
     private void Animating(float h, float v)
