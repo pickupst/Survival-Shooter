@@ -16,20 +16,21 @@ public class PauseManager : MonoBehaviour {
 	void Start()
 	{
 		canvas = GetComponent<Canvas>();
-	}
+        canvas.enabled = false;
+    }
 	
 	void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			canvas.enabled = !canvas.enabled;
 			Pause();
 		}
 	}
 	
 	public void Pause()
 	{
-		Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        canvas.enabled = !canvas.enabled;
+        Time.timeScale = Time.timeScale == 0 ? 1 : 0;
 		Lowpass ();
 		
 	}
