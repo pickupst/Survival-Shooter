@@ -21,6 +21,8 @@ public class PlayerShooting : MonoBehaviour
     Light gunLight;
     float effectsDisplayTime = 0.2f;
 
+    public Image enemyImage;
+    public Slider enemyHealthSlider;
 
     void Awake ()
     {
@@ -30,6 +32,9 @@ public class PlayerShooting : MonoBehaviour
         gunAudio = GetComponent<AudioSource> ();
         gunLight = GetComponent<Light> ();
         currentBullets = maxBullets;
+
+        enemyImage.enabled = false;
+        enemyHealthSlider.gameObject.SetActive(false);
     }
 
 
@@ -84,13 +89,29 @@ public class PlayerShooting : MonoBehaviour
             EnemyHealth enemyHealth = shootHit.collider.GetComponent <EnemyHealth> ();
             if(enemyHealth != null)
             {
+
                 enemyHealth.TakeDamage (damagePerShot, shootHit.point);
+
+                enemyImage.enabled = true;
+                enemyImage.sprite = enemyHealth.icon;
+
+                enemyHealthSlider.gameObject.SetActive(true);
+                enemyHealthSlider.maxValue = enemyHealth.startingHealth;
+                enemyHealthSlider.value = enemyHealth.currentHealth;
+
+            }
+            else
+            {
+                enemyImage.enabled = false;
+                enemyHealthSlider.gameObject.SetActive(false);
             }
             gunLine.SetPosition (1, shootHit.point);
+            
         }
         else
         {
             gunLine.SetPosition (1, shootRay.origin + shootRay.direction * range);
         }
+        
     }
 }

@@ -264,6 +264,7 @@ MonoBehaviour:
   sinkSpeed: 2.5
   scoreValue: 10
   deathClip: {fileID: 8300000, guid: 1d3bfb9269f136947bf8ac164cace1ff, type: 3}
+  icon: {fileID: 21300000, guid: 61c66ff604b207d4eac01bf9851d33d1, type: 3}
 --- !u!1 &832046302
 GameObject:
   m_ObjectHideFlags: 0
